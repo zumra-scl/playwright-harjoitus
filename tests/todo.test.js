@@ -73,3 +73,35 @@ test("käyttäjä voi lisätä kolme tehtävää", async ({ page }) => {
 
   await expect(tasks).toHaveCount(3);
 });
+
+test("käyttäjä voi lisätä kaksi tehtävää peräkkäin", async ({ page }) => {
+  await page.goto("http://localhost:3000");
+
+  const taskInput = page.getByLabel("Uusi tehtävä");
+
+  await taskInput.fill("Ensimmäinen tehtävä");
+  await page
+    .getByRole("button", {
+      name: "Lisää",
+    })
+    .click();
+
+  await taskInput.fill("Toinen tehtävä");
+  await page
+    .getByRole("button", {
+      name: "Lisää",
+    })
+    .click();
+
+  await expect(page.getByText("Ensimmäinen tehtävä")).toBeVisible();
+
+  await expect(page.getByText("Toinen tehtävä")).toBeVisible();
+
+  const tasks = page.locator("#task-list li");
+
+  await expect(tasks).toHaveCount(2);
+
+  await expect(taskInput).toHaveValue("");
+
+  await expect(page.getByText("Tehtävä lisätty.")).toBeVisible();
+});
