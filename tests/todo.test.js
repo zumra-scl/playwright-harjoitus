@@ -24,3 +24,15 @@ test("lomakekenttä tyhjennetään tehtävän lisäämisen jälkeen", async ({
 
   await expect(taskInput).toHaveValue("");
 });
+
+test("tyhjää tehtävää ei voi lisätä", async ({ page }) => {
+  await page.goto("http://localhost:3000");
+
+  await page
+    .getByRole("button", {
+      name: "Lisää",
+    })
+    .click();
+
+  await expect(page.getByText("Tehtävä ei voi olla tyhjä.")).toBeVisible();
+});
